@@ -1,0 +1,22 @@
+{% extends "cms/base.html" %}
+{% load bootstrap4 %}
+
+{% block title %}Record Edit{% endblock title %}
+
+{% block content %}
+    <h4 class="mt-4 mb-5 border-bottom">Record Edit</h4>
+    {% if record_id %}
+    <form action="{% url 'cms:record_mod' quest_id=quest_id record_id=record_id %}" method="post">
+    {% else %}
+    <form action="{% url 'cms:record_add' quest_id=quest_id %}" method="post">
+    {% endif %}
+      {% csrf_token %}
+      {% bootstrap_form form layout='horizontal' %}
+      <div class="form-group row">
+        <div class="offset-md-3 col-md-9">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+    <a href="{% url 'cms:record_list' quest_id=quest_id party='solo' weapon='all' rule='all' platform='switch' %}" class="btn btn-secondary btn-sm">Return</a>
+{% endblock content %}

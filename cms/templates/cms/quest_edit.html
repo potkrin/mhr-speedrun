@@ -1,0 +1,22 @@
+{% extends "cms/base.html" %}
+{% load bootstrap4 %}
+
+{% block title %}Quest Edit{% endblock title %}
+
+{% block content %}
+    <h4 class="mt-4 mb-5 border-bottom">Quest Edit</h4>
+    {% if quest_id %}
+    <form action="{% url 'cms:quest_mod' quest_id=quest_id %}" method="post">
+    {% else %}
+    <form action="{% url 'cms:quest_add' %}" method="post">
+    {% endif %}
+      {% csrf_token %}
+      {% bootstrap_form form layout='horizontal' %}
+      <div class="form-group row">
+        <div class="offset-md-3 col-md-9">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+    <a href="{% url 'cms:quest_list' %}" class="btn btn-secondary btn-sm">Return</a>
+{% endblock content %}
