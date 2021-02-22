@@ -8,8 +8,10 @@
 
     <h4 class="mt-4 border-bottom">Record List<small class="text-muted ml-3">{{ quest.questname}}</small></h4>
 
-        <div class="row ml-5 flex-nowrap">
-          <div class="dropdown">
+        <div class="row ml-0 flex-nowrap">
+          
+ 
+          <div class="dropdown ml-0">
             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               
             {{ st.weapon_name }}
@@ -21,13 +23,29 @@
             {% endfor %}
             </div>
           </div>
+          <div class="dropdown ml-3">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              
+            {{ st.party_name }}
+            
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for itr in party_list %}
+              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=itr.urlname weapon=st.weapon rule=st.rule platform=st.platform %}">{{ itr.name }}</a>
+            {% endfor %}
+            </div>
+          </div>
           <div class="btn-group btn-group-toggle ml-3" data-toggle="buttons">
             <label class="btn btn-primary active">
-              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule='all' platform=st.platform %}'" {{ st.free }} >Freestyle
+              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule='all' platform=st.platform %}'" {{ st.free }} > FreeStyle
             </label>
-            <label class="btn btn-primary">
-              <input type="radio" name="options" id="option2" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule='ta-wiki' platform=st.platform %}'" {{ st.tawiki }}>TA
+            <label class="btn btn-primary active">
+              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule='ta-wiki' platform=st.platform %}'" {{ st.tawiki }} > TAwiki
             </label>
+            <label class="btn btn-primary active">
+              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule='production' platform=st.platform %}'" {{ st.product }} > Product 
+            </label>
+         
           </div>
           <div class="btn-group btn-group-toggle ml-3" data-toggle="buttons">
             <label class="btn btn-primary active">
@@ -45,7 +63,7 @@
               <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule=st.rule platform=st.platform %}'" {{ st.record_list }} >List
             </label>
             <label class="btn btn-primary">
-              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:weapon_rank' quest_id=quest.id party=st.party rule=st.rule platform=st.platform %}'" {{ st.summary }} >Summary
+              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:weapon_rank' quest_id=quest.id party=st.party rule=st.rule platform=st.platform %}'" {{ st.summary }} > WeaponRank
             </label>
           </div>
         </div>
@@ -54,11 +72,10 @@
     <table class="table table-striped table-bordered">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Runner</th>
-          <th>PT</th>
           <th>Time</th>
           <th>Weapon</th>
+          <th>PT</th>
           <th>Rule</th>
           <th>Platform</th>
           <th>Problems</th>
@@ -68,12 +85,10 @@
       <tbody>
         {% for record in records %}
         <tr>
-          <td>{{ record.id }}</td>
           <td>{{ record.runner }}</td>
-          <td>{{ record.get_party_display }}</td>
           <td><a href="{{ record.link }}" target="_blank" rel="noopener noreferrer" class="text-primary">{{ record.cleartime | duration }}</a></td>
- 
           <td>{{ record.get_weapon_display }}</td>
+          <td>{{ record.get_party_display }}</td>
           <td>{{ record.get_rules_display }}</td>
           <td>{{ record.get_platform_display }}</td>
           <td>{{ record.problems }}</td>

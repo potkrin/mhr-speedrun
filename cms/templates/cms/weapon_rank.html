@@ -8,29 +8,27 @@
 
     <h4 class="mt-4 border-bottom">Record List<small class="text-muted ml-3">{{ quest.questname}}</small></h4>
 
-        <div class="row ml-5 flex-nowrap">
+        <div class="row ml-0 flex-nowrap">
           <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              
             {{ st.weapon_name }}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for itr in weapon_list %}
+              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=itr.urlname rule=st.rule platform=st.platform %}">{{ itr.name }}</a>
+            {% endfor %}
+            </div>
+          </div> 
+          <div class="dropdown ml-3">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              
+            {{ st.party_name }}
             
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='all' rule=st.rule platform=st.platform %}">All</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='great-sword' rule=st.rule platform=st.platform %}">Great Sword</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='long-sword' rule=st.rule platform=st.platform %}">Long Sword</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='sword-and-shield' rule=st.rule platform=st.platform %}">Sword & Shield</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='dual-blades' rule=st.rule platform=st.platform %}">Dual Blades</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='hammer' rule=st.rule platform=st.platform %}">Hammer</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='hunting-horn' rule=st.rule platform=st.platform %}">Hunting Horn</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='lance' rule=st.rule platform=st.platform %}">Lance</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='gunlance' rule=st.rule platform=st.platform %}">Gunlance</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='switch-axe' rule=st.rule platform=st.platform %}">Switch Axe</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='charge-blade' rule=st.rule platform=st.platform %}">Charge Blade</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='insect-glaive' rule=st.rule platform=st.platform %}">Insect Glaive</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='light-bowgun' rule=st.rule platform=st.platform %}">Light Bowgun</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='heavy-bowgun' rule=st.rule platform=st.platform %}">Heavy Bowgun</a>
-              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=st.party weapon='bow' rule=st.rule platform=st.platform %}">Bow</a>
+            {% for itr in party_list %}
+              <a class="dropdown-item" href="{% url 'cms:record_list' quest_id=quest.id party=itr.urlname weapon=st.weapon rule=st.rule platform=st.platform %}">{{ itr.name }}</a>
+            {% endfor %}
             </div>
           </div>
           <div class="btn-group btn-group-toggle ml-3" data-toggle="buttons">
@@ -39,6 +37,9 @@
             </label>
             <label class="btn btn-primary">
               <input type="radio" name="options" id="option2" autocomplete="off" onclick="location.href='{% url 'cms:weapon_rank' quest_id=quest.id party=st.party rule='ta-wiki' platform=st.platform %}'" {{ st.tawiki }}>TA
+            </label>
+            <label class="btn btn-primary active">
+              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule='production' platform=st.platform %}'" {{ st.product }} > Product 
             </label>
           </div>
           <div class="btn-group btn-group-toggle ml-3" data-toggle="buttons">
@@ -57,7 +58,7 @@
               <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:record_list' quest_id=quest.id party=st.party weapon=st.weapon rule=st.rule platform=st.platform %}'" {{ st.record_list }} >List
             </label>
             <label class="btn btn-primary">
-              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:weapon_rank' quest_id=quest.id party=st.party rule=st.rule platform=st.platform %}'" {{ st.summary }} >Summary
+              <input type="radio" name="options" id="option1" autocomplete="off" onclick="location.href='{% url 'cms:weapon_rank' quest_id=quest.id party=st.party rule=st.rule platform=st.platform %}'" {{ st.summary }} > WeaponRank
             </label>
           </div>
         </div>

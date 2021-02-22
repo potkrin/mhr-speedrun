@@ -15,6 +15,8 @@ urlpatterns = [
     path('record/<int:quest_id>/<str:party>/<str:weapon>/<str:rule>/<str:platform>/', views.RecordList.as_view(), name='record_list'),    # List
     path('record/<int:quest_id>/<str:party>/<str:rule>/<str:platform>/', views.Summary.as_view(), name='weapon_rank'),    # List
     path('record/add/<int:quest_id>/', views.record_edit, name='record_add'), # add 
+    path('record/add/<int:quest_id>/<int:conf>', views.record_edit, name='record_add'), # add 
     path('record/mod/<int:quest_id>/<int:record_id>/', views.record_edit, name='record_mod'), # modify 
+    path('record/mod/<int:quest_id>/<int:record_id>/<int:conf>', views.record_edit, name='record_mod'), # modify 
     path('record/del/<int:quest_id>/<int:record_id>/', views.record_del, name='record_del'),  # delete 
 ]

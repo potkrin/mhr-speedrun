@@ -45,8 +45,10 @@ def quest_del(request, quest_id):
     quest.delete()
     return redirect('cms:quest_list')
 
+# party, weapon などの選択情報を保持するクラス
 class PageStatus:
     party = 'solo'
+    party_name = ''
     weapon = 'all'
     weapon_name = 'All'
     rule = 'all'
@@ -113,8 +115,7 @@ party_list = [
              ]
 
 rule_list = [
-                RuleInfo('All', 'all', r'.*'),
-                RuleInfo('Freestyle', 'free', 'FR'),
+                RuleInfo('Freestyle', 'all', r'.*'),
                 RuleInfo('TAwiki', 'ta-wiki', 'TW'),
                 RuleInfo('Production', 'production', 'PD'),
             ]
@@ -161,6 +162,7 @@ class RecordList(ListView):
         for itr in party_list:
             if party_qr == itr.urlname:
                 party_re = itr.modelname
+                st.party_name = itr.name
                 break
         
         weapon_qr = kwargs['weapon']
@@ -189,7 +191,7 @@ class RecordList(ListView):
         records = quest.records.filter(party__regex=party_re, weapon__regex=weapon_re, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
 
         self.object_list = records
-        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list)
+        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list, rule_list=rule_list)
         return self.render_to_response(context)
 
 class Summary(ListView):
@@ -228,6 +230,8 @@ class Summary(ListView):
             st.pc = 'checked'
 
         st.summary = 'checked'
+        st.weapon_name = 'Weapon'
+        st.party_name = 'Solo'
 
         rule_qr = kwargs['rule']
         for itr in rule_list:
@@ -253,13 +257,13 @@ class Summary(ListView):
         ### add for ranking end
 
         self.object_list = records
-        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st)
+        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list)
         return self.render_to_response(context)
 
 
 
 
-def record_edit(request, quest_id, record_id=None):
+def record_edit(request, quest_id, record_id=None, conf=None):
     """記録の編集"""
     quest = get_object_or_404(Quest, pk=quest_id)
     if record_id:
@@ -269,6 +273,9 @@ def record_edit(request, quest_id, record_id=None):
 
     if request.method == 'POST':
         form = RecordForm(request.POST, instance=record)
+        if conf == 1:
+            return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, noconf=1))
+
         if form.is_valid():
             record = form.save(commit=False)
             record.quest = quest
@@ -278,6 +285,38 @@ def record_edit(request, quest_id, record_id=None):
         form = RecordForm(instance=record)
     
     return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id))
+
+"""
+def record_confirm(request, quest_id, confirm=None):
+    quest = get_object_or_404(Quest, pk=quest_id)
+    if record_id:
+        record = get_object_or_404(Record, pk=record_id)
+    else:
+        # record = Record()
+    record = Record()
+
+    if request.method == 'POST':
+        if confirm:
+            form = RecordForm(request.POST, instance=record)
+            if form.is_valid():
+                record = form.save(commit=False)
+                record.quest = quest
+                # record.save()
+                return render(request, 'cms/record_confirm.html', dict(form=form, quest_id=quest_id, record_id=record_id))
+        else:
+            form = RecordForm(request.POST, instance=record)
+            if form.is_valid():
+                record = form.save(commit=False)
+                record.quest = quest
+                record.save()
+                return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
+    #else: # GET
+    #    form = RecordForm(instance=record)
+    
+    return render(request, 'cms/record_confirm.html', dict(form=form, quest_id=quest_id, record_id=record_id))
+"""
+
+
 
 def record_del(request, quest_id, record_id):
     """記録の削除"""

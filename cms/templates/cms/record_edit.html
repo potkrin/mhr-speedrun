@@ -4,11 +4,24 @@
 {% block title %}Record Edit{% endblock title %}
 
 {% block content %}
+
     <h4 class="mt-4 mb-5 border-bottom">Record Edit</h4>
+
+    {% if noconf %}
+    <h5 class="mt-4 text-danger">
+    You can't delete the record after you submit! <br>
+    Please check your input again.
+    </h5>
+    {% endif %}
+ 
     {% if record_id %}
-    <form action="{% url 'cms:record_mod' quest_id=quest_id record_id=record_id %}" method="post">
+    <form action="{% url 'cms:record_mod' quest_id=quest_id record_id=record_id conf=1 %}" method="post">
     {% else %}
-    <form action="{% url 'cms:record_add' quest_id=quest_id %}" method="post">
+      {% if noconf %}
+      <form action="{% url 'cms:record_add' quest_id=quest_id %}" method="post">
+      {% else %}
+      <form action="{% url 'cms:record_add' quest_id=quest_id conf=1 %}" method="post">
+      {% endif %}
     {% endif %}
       {% csrf_token %}
       {% bootstrap_form form layout='horizontal' %}
