@@ -67,6 +67,24 @@ class WeaponInfo:
         self.urlname = urlname
         self.modelname = modelname
 
+class PartyInfo:
+    def __init__(self, name, urlname, modelname):
+        self.name = name
+        self.urlname = urlname
+        self.modelname = modelname
+
+class RuleInfo:
+    def __init__(self, name, urlname, modelname):
+        self.name = name
+        self.urlname = urlname
+        self.modelname = modelname
+
+class PlatformInfo:
+    def __init__(self, name, urlname, modelname):
+        self.name = name
+        self.urlname = urlname
+        self.modelname = modelname
+
 
 weapon_list = [
                 WeaponInfo('All', 'all', r'.*'),
@@ -87,7 +105,26 @@ weapon_list = [
                 WeaponInfo('Mixed', 'mix', 'MIX'),
               ]
   
+party_list = [
+                PartyInfo('All', 'all', r'.*'),
+                PartyInfo('Solo', 'solo', 'S'),
+                PartyInfo('Pair', 'pair', 'P'),
+                PartyInfo('3or4', 'multi', 'M'),
+             ]
 
+rule_list = [
+                RuleInfo('All', 'all', r'.*'),
+                RuleInfo('Freestyle', 'free', 'FR'),
+                RuleInfo('TAwiki', 'ta-wiki', 'TW'),
+                RuleInfo('Production', 'production', 'PD'),
+            ]
+
+platform_list = [
+                PlatformInfo('All', 'all', r'.*'),
+                PlatformInfo('Switch', 'switch', 'SW'),
+                PlatformInfo('PC', 'pc', 'PC'),
+                ]
+ 
 class RecordList(ListView):
     """クエストのTA記録の一覧"""
     context_object_name = 'records'
@@ -119,49 +156,36 @@ class RecordList(ListView):
         
         st.record_list = 'checked'
         
-
-
+        # make regular expression for DB from URL path
         party_qr = kwargs['party']
-        #party_re
-        if party_qr=='all':
-            party_re = r'.*'
-        elif party_qr=='pair':
-            party_re = r'P'
-        elif party_qr=='multi':
-            party_re = r'M'
-        else:
-            party_re = r'S'
-
-
+        for itr in party_list:
+            if party_qr == itr.urlname:
+                party_re = itr.modelname
+                break
+        
         weapon_qr = kwargs['weapon']
         weapon_re = r'.*'
         for itr in weapon_list:
             if weapon_qr == itr.urlname:
                 weapon_re = itr.modelname
-                st.weapon_name = itr.name
+                if itr.name != 'All':
+                    st.weapon_name = itr.name
+                else:
+                    st.weapon_name = 'Weapon'
                 break
 
         rule_qr = kwargs['rule']
-        if rule_qr=='free-style':
-            rule_re = r'.*'
-        elif rule_qr=='ta-wiki':
-            rule_re = r'TW'
-        elif rule_qr=='production':
-            rule_re = r'PD'
-        else:
-            rule_re = r'.*'
-
+        for itr in rule_list:
+            if rule_qr == itr.urlname:
+                rule_re = itr.modelname
+                break
+        
         platform_qr = kwargs['platform']
-        #platform_re
-        if platform_qr=='all':
-            platform_re = r'.*'
-        elif platform_qr=='switch':
-            platform_re = r'SW'
-        elif platform_qr=='pc':
-            platform_re = r'PC'
-        else:
-            platform_re = r'SW'
- 
+        for itr in platform_list:
+            if platform_qr == itr.urlname:
+                platform_re = itr.modelname
+                break
+        
         records = quest.records.filter(party__regex=party_re, weapon__regex=weapon_re, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
 
         self.object_list = records
@@ -182,6 +206,13 @@ class Summary(ListView):
         st.platform = kwargs['platform']
         st.weapon_name = 'All'
 
+        party_qr = kwargs['party']
+        #party_re
+        for itr in party_list:
+            if party_qr == itr.urlname:
+                party_re = itr.modelname
+ 
+
         if st.rule == 'all':
             st.free = 'checked'
         elif st.rule == 'ta-wiki':
@@ -199,26 +230,17 @@ class Summary(ListView):
         st.summary = 'checked'
 
         rule_qr = kwargs['rule']
-        if rule_qr=='free-style':
-            rule_re = r'.*'
-        elif rule_qr=='ta-wiki':
-            rule_re = r'TW'
-        elif rule_qr=='production':
-            rule_re = r'PD'
-        else:
-            rule_re = r'.*'
-
+        for itr in rule_list:
+            if rule_qr == itr.urlname:
+                rule_re = itr.modelname
+                break
+        
         platform_qr = kwargs['platform']
-        if platform_qr=='all':
-            platform_re = r'.*'
-        elif platform_qr=='switch':
-            platform_re = r'SW'
-        elif platform_qr=='pc':
-            platform_re = r'PC'
-        else:
-            platform_re = r'SW'
- 
-        ### add for ranking
+        for itr in platform_list:
+            if platform_qr == itr.urlname:
+                platform_re = itr.modelname
+                break
+        
         records = []
         for i in range(1, 15):
             wrecords = quest.records.filter(party__regex='S', weapon__regex=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
