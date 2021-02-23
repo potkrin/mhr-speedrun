@@ -23,10 +23,10 @@ class Record(models.Model):
     cleartime = models.DurationField()
     link = models.URLField(max_length=2047)
     weapon = models.CharField('Weapon', max_length=255,
-                               choices=[('GS', 'Greate Sword'), ('LS', 'Long Sword'), ('SNS', 'Sword & Shiled'), ('DB', 'Dual Blades'),
-                                        ('HM', 'Hammer'), ('HH', 'Hunting Horn'), ('LN', 'Lance'), ('GL', 'Gunlance'),
-                                        ('SA', 'Switch Axe'), ('CB', 'Charge Blade'), ('IG', 'Insect Glaive'), ('LBG', 'Light Bowgun'),
-                                        ('HBG', 'Heavy Bowgun'), ('BOW', 'Bow'), ('MIX', 'Mixed'), 
+                               choices=[('GS', 'great-sword'), ('LS', 'long-sword'), ('SNS', 'sword-and-shield'), ('DB', 'dual-blades'),
+                                        ('HM', 'hammer'), ('HH', 'hunting-horn'), ('LN', 'lance'), ('GL', 'gunlance'),
+                                        ('SA', 'switch-axe'), ('CB', 'charge-blade'), ('IG', 'insect-glaive'), ('LBG', 'light-bowgun'),
+                                        ('HBG', 'heavy-bowgun'), ('BOW', 'bow'), ('MIX', 'mixed'), 
                                         ])
     rules = models.CharField('Rules', max_length=255, choices=[('FR','FreeStyle'), ('TW','TA wiki'), ('PD','Production'), ])
     platform = models.CharField('PlatForms', max_length=255, choices=[('SW','Switch'), ('PC','PC'),])
