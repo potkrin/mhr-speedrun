@@ -273,7 +273,7 @@ def record_edit(request, quest_id, record_id=None, conf=None):
 
     if request.method == 'POST':
         form = RecordForm(request.POST, instance=record)
-        if conf == 1:
+        if conf == 1 or not form.is_valid():
             return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, noconf=1))
 
         if form.is_valid():
@@ -282,6 +282,7 @@ def record_edit(request, quest_id, record_id=None, conf=None):
             record.save()
             return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
     else: # GET
+        record.quest = quest
         form = RecordForm(instance=record)
     
     return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id))

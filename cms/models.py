@@ -1,6 +1,7 @@
 from django.db import models
 
 from datetime import timedelta
+from django.core.validators import RegexValidator
 
 class Quest(models.Model):
     """クエスト"""
@@ -21,7 +22,8 @@ class Record(models.Model):
     party = models.CharField('Party', max_length=255, choices=[('S','1'), ('P','2'), ('M', '3or4'),])
     # cleartime = models.DurationField(default=timedelta(minutes=12, seconds=7, milliseconds=780))
     cleartime = models.DurationField()
-    link = models.URLField(max_length=2047)
+    link_regex = RegexValidator(regex=r'^https://www.youtube.com/watch|https://www.nicovideo.jp/watch/|https://www.bilibili.com/video/', message='aaaaaaaaaaaa!!!')
+    link = models.URLField(validators=[link_regex], max_length=2047)
     weapon = models.CharField('Weapon', max_length=255,
                                choices=[('GS', 'great-sword'), ('LS', 'long-sword'), ('SNS', 'sword-and-shield'), ('DB', 'dual-blades'),
                                         ('HM', 'hammer'), ('HH', 'hunting-horn'), ('LN', 'lance'), ('GL', 'gunlance'),

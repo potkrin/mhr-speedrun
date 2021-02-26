@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from cms.models import Quest, Record
 from django import forms
+from django.core.validators import RegexValidator
 
 class QuestForm(ModelForm):
     """クエストのフォーム"""
@@ -10,11 +11,13 @@ class QuestForm(ModelForm):
 
 class RecordForm(ModelForm):
     """記録のフォーム"""
+
     class Meta:
         model = Record 
         fields = ('quest', 'runner', 'party', 'cleartime', 'link', 'weapon', 'rules', 'platform', 'problems',)
         widgets = {
             'cleartime': forms.TextInput(attrs={'placeholder': '12:07.00'}),
+
         }
 
 
