@@ -1,0 +1,82 @@
+.card-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 485px);
+    grid-gap:0px;
+    justify-content: center; /* グリッド全体を中央に寄せる設定 */
+}
+.quest-card{
+    position: relative;
+    z-index: 1; /* 必要であればリンク要素の重なりのベース順序指定 */ 
+    min-height:58px;
+    overflow:visible;
+    background-color:rgb(255, 255, 255);
+    display:flex;
+    padding:0.5em;
+    align-items:center;
+    position:relative;
+    transition:color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out,
+    box-shadow .15s ease-in-out;
+    outline:1px solid  rgb(200, 200, 200);
+    margin:12px;
+}
+.quest-card:hover {
+    outline:3px solid rgb(141, 141, 141);
+}
+
+.quest-card__link {
+    color:#000000;
+    /*text-decoration: underline;*/
+}
+
+.quest-card__link a {
+    color:#000000;
+}
+.quest-card__link:hover {
+    color:#007bff;
+}
+
+.quest-card__link a:hover {
+    color:#007bff;
+}
+
+.quest-card img {
+    margin-top:0px;
+    margin-bottom: 0px;
+    margin-right: 16px;
+    margin-left: 0px;
+    height:48px;
+    display:inline-block;
+}
+
+.quest-card div {display: inline-block;}
+
+.quest-card {
+    position: relative;
+}
+
+.quest-card a::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    pointer-events: auto;
+    content: "";
+    background-color: transparent;
+
+    z-index: 2; /* 必要であればリンク要素の重なりのベース順序指定 */
+}
+
+.container-fluid {
+    margin:30px;
+    padding:0px;
+}
+
+body { 
+    margin: 0px;
+    padding: 0px;
+    /*background-color:black;*/
+    }
+

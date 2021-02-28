@@ -13,7 +13,7 @@ from datetime import timedelta
 def quest_list(request):
     """クエストの一覧"""
     # return HttpResponse('List of Quest')
-    quests = Quest.objects.all().order_by('id')
+    quests = Quest.objects.all().order_by('priority')
     return render(request, 'cms/quest_list.html',  # 使用するテンプレート
                            {'quests': quests})     # テンプレートに渡すデータ
 
@@ -193,6 +193,7 @@ class RecordList(ListView):
         self.object_list = records
         context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list, rule_list=rule_list)
         return self.render_to_response(context)
+
 
 class Summary(ListView):
     """武器ランキング と トップ3まとめ用"""

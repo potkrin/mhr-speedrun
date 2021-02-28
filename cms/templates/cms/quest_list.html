@@ -1,34 +1,32 @@
-{% extends "cms/base.html" %}
+{% extends "cms/basefront.html" %}
+
+{% load i18n static %}
+
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'cms/css/quest-card.css' %}">
+{% endblock %}
 
 {% block title %}Quest List{% endblock title %}
 
+
 {% block content %}
-    <h4 class="mt-4 border-bottom">Quest List</h4>
+
+
+    <!--<h4 class="mt-4 border-bottom">Quest List</h4>
     <a href="{% url 'cms:quest_add' %}" class="btn btn-primary btn-sm my-3">Add</a>
-    <table class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Quest Name</th>
-          <th scope="col">Rank</th>
-          <th scope="col">Target</th>
-          <th scope="col">Operation</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for quest in quests %}
-        <tr>
-          <th scope="row">{{ quest.id }}</th>
-          <td>{{ quest.questname }}</td>
-          <td>{{ quest.rank}}</td>
-          <td>{{ quest.target }}</td>
-          <td>
-            <a href="{% url 'cms:quest_mod' quest_id=quest.id %}" class="btn btn-outline-primary btn-sm">Mod</a>
-            <a href="{% url 'cms:quest_del' quest_id=quest.id %}" class="btn btn-outline-danger btn-sm">Del</a>
-            <a href="{% url 'cms:record_list' quest_id=quest.id party='solo' weapon='all' rule='all' platform='switch' %}" class="btn btn-outline-info btn-sm">Record</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    -->
+
+    <div class="card-list" >
+    {% for quest in quests %}
+        <div class="quest-card">
+            {% with 'cms/monster_icon/'|add:quest.target.imagepath as image_static %}
+            <img src="{% static image_static %}" alt={{quest.target.monstername}}>
+            {% endwith %}
+            <div class="quest-card__link">
+                <a href="{% url 'cms:record_list' quest_id=quest.id party='solo' weapon='all' rule='all' platform='switch' %}">{{ quest.rank }} {{ quest.questname}}<span class="small">(67)</span></a><br>
+                {{ quest.questname_j }}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
 {% endblock content %}

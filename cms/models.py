@@ -3,13 +3,57 @@ from django.db import models
 from datetime import timedelta
 from django.core.validators import RegexValidator
 
+import ast
+class ListField(models.TextField):
+	description = "Stores a python list"
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+	def from_db_value(self, value, expression, connection):
+		if value is None:
+			return value
+		if isinstance(value, str):
+			return value.split(',')
+
+	def to_python(self, value):
+		if not value:
+			value = []
+		if isinstance(value, list):
+			return value
+		if isinstance(value, str):
+			return ast.literal_eval(value)
+
+	def get_prep_value(self, value):
+		if value is None:
+			return value
+		if value is not None and isinstance(value, str):
+			return value
+		if isinstance(value, list):
+			return ','.join(value)
+
+	def value_to_string(self, obj):
+		value = self.value_from_object(obj)
+		return self.get_prep_value(value)
+
+
+class Target(models.Model):
+    """クエストターゲットになるモンスター"""
+    monstername = models.CharField('Monster Name', max_length=255)
+    imagepath = models.CharField('Image Path', max_length=511)
+
+    def __str__(self):
+        return self.monstername
+
+
 class Quest(models.Model):
     """クエスト"""
     questname = models.CharField('Quest Name', max_length=255)
+    questname_j = models.CharField('Quest Name japanese', max_length=255)
+    #target = models.CharField('Quest Rank', max_length=255)
     rank = models.CharField('Quest Rank', max_length=255)
-    target = models.CharField('Target', max_length=255)
-    # publisher = models.CharField('出版社', max_length=255, blank=True)
-    # page = models.IntegerField('ページ数', blank=True, default=0)
+    priority = models.PositiveIntegerField('Priority in quest page', default=0)
+    target = models.ForeignKey(Target, verbose_name='Target', related_name='quests', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.questname

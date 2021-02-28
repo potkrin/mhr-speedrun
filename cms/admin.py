@@ -1,12 +1,19 @@
 from django.contrib import admin
-from cms.models import Quest, Record
+from cms.models import Target, Quest, Record
 
 # Register your models here.
 
-class QuestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'questname', 'rank',)
-    list_display_links = ('id', 'questname', 'rank')
+class TargetAdmin(admin.ModelAdmin):
+    list_display = ('id', 'monstername', 'imagepath',)
+    list_display_links = ('id', 'monstername', 'imagepath')
 
+admin.site.register(Target, TargetAdmin)
+
+
+class QuestAdmin(admin.ModelAdmin):
+    list_display = ('id', 'questname', 'rank', )
+    list_display_links = ('id', 'questname', 'rank',) 
+    
 admin.site.register(Quest, QuestAdmin)
 
 class RecordAdmin(admin.ModelAdmin):
