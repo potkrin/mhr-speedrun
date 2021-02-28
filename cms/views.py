@@ -135,6 +135,12 @@ class RecordList(ListView):
     def get(self, request, *args, **kwargs):
         quest = get_object_or_404(Quest, pk=kwargs['quest_id'])
 
+        print(quest.recordnum)
+        num = quest.records.all().count()
+        print(num)
+        quest.recordnum = num
+        quest.save()
+
         st = PageStatus()
         st.party = kwargs['party']
         st.weapon = kwargs['weapon']

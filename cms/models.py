@@ -54,6 +54,7 @@ class Quest(models.Model):
     rank = models.CharField('Quest Rank', max_length=255)
     priority = models.PositiveIntegerField('Priority in quest page', default=0)
     target = models.ForeignKey(Target, verbose_name='Target', related_name='quests', on_delete=models.SET_NULL, null=True)
+    recordnum = models.IntegerField('Number of record of this quest', default=0)
 
     def __str__(self):
         return self.questname

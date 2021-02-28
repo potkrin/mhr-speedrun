@@ -23,8 +23,9 @@
             <img src="{% static image_static %}" alt={{quest.target.monstername}}>
             {% endwith %}
             <div class="quest-card__link">
-                <a href="{% url 'cms:record_list' quest_id=quest.id party='solo' weapon='all' rule='all' platform='switch' %}">{{ quest.rank }} {{ quest.questname}}<span class="small">(67)</span></a><br>
+                <a href="{% url 'cms:record_list' quest_id=quest.id party='solo' weapon='all' rule='all' platform='switch' %}">{{ quest.rank }} {{ quest.questname}}<span>({{ quest.recordnum }})</span><br>
                 {{ quest.questname_j }}
+                </a>
             </div>
         </div>
     {% endfor %}
