@@ -46,6 +46,14 @@ class Target(models.Model):
         return self.monstername
 
 
+class Weapon(models.Model):
+    name = models.CharField('Weapon Name', max_length=255)
+    imagepath = models.CharField('Image Path', max_length=511)
+
+    def  __str__(self):
+        return self.name
+
+
 class Quest(models.Model):
     """クエスト"""
     questname = models.CharField('Quest Name', max_length=255)
@@ -69,12 +77,15 @@ class Record(models.Model):
     cleartime = models.DurationField()
     link_regex = RegexValidator(regex=r'^https://www.youtube.com/watch|https://www.nicovideo.jp/watch/|https://www.bilibili.com/video/', message='aaaaaaaaaaaa!!!')
     link = models.URLField(validators=[link_regex], max_length=2047)
+    weapon = models.ForeignKey(Weapon, verbose_name='Weapon', on_delete=models.SET_NULL, null=True)
+    """
     weapon = models.CharField('Weapon', max_length=255,
                                choices=[('GS', 'great-sword'), ('LS', 'long-sword'), ('SNS', 'sword-and-shield'), ('DB', 'dual-blades'),
                                         ('HM', 'hammer'), ('HH', 'hunting-horn'), ('LN', 'lance'), ('GL', 'gunlance'),
                                         ('SA', 'switch-axe'), ('CB', 'charge-blade'), ('IG', 'insect-glaive'), ('LBG', 'light-bowgun'),
                                         ('HBG', 'heavy-bowgun'), ('BOW', 'bow'), ('MIX', 'mixed'), 
                                         ])
+    """
     rules = models.CharField('Rules', max_length=255, choices=[('FR','FreeStyle'), ('TW','TA wiki'), ('PD','Production'), ])
     platform = models.CharField('PlatForms', max_length=255, choices=[('SW','Switch'), ('PC','PC'),])
     problems = models.IntegerField('Problem report', blank=True, default=0)

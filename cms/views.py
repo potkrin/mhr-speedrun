@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.generic.list import ListView
 
-from cms.models import Quest, Record
+from cms.models import Quest, Record, Weapon
 from cms.forms import QuestForm, RecordForm
 
 # for list sort
@@ -89,22 +89,22 @@ class PlatformInfo:
 
 
 weapon_list = [
-                WeaponInfo('All', 'all', r'.*'),
-                WeaponInfo('Great Sword', 'great-sword', 'GS'),
-                WeaponInfo('Long Sword', 'long-sword', 'LS'),
-                WeaponInfo('Sword & Shield', 'sword-and-shield', 'SNS'),
-                WeaponInfo('Dual Blades', 'dual-blades', 'DB'),
-                WeaponInfo('Hammer', 'hammer', 'HM'),
-                WeaponInfo('Hunting Horn', 'hunting-horn', 'HH'),
-                WeaponInfo('Lance', 'lance', 'LN'),
-                WeaponInfo('Gunlance', 'gunlance', 'GL'),
-                WeaponInfo('Switch Axe', 'switch-axe', 'SA'),
-                WeaponInfo('Charge Blade', 'charge-blade', 'CB'),
-                WeaponInfo('Insect Glaive', 'insect-glaive', 'IG'),
-                WeaponInfo('Light Bowgun', 'light-bowgun', 'LBG'),
-                WeaponInfo('Heavy Bowgun', 'heavy-bowgun', 'HBG'),
-                WeaponInfo('Bow', 'bow', 'BOW'),
-                WeaponInfo('Mixed', 'mix', 'MIX'),
+                WeaponInfo('All', 'all', ''),
+                WeaponInfo('Great Sword', 'great-sword', 'Great Sword'),
+                WeaponInfo('Long Sword', 'long-sword', 'Long Sword'),
+                WeaponInfo('Sword & Shield', 'sword-and-shield', 'Sword & Shield'),
+                WeaponInfo('Dual Blades', 'dual-blades', 'Dual Blades'),
+                WeaponInfo('Hammer', 'hammer', 'Hammer'),
+                WeaponInfo('Hunting Horn', 'hunting-horn', 'Hunting Horn'),
+                WeaponInfo('Lance', 'lance', 'Lance'),
+                WeaponInfo('Gunlance', 'gunlance', 'Gunlance'),
+                WeaponInfo('Switch Axe', 'switch-axe', 'Switch Axe'),
+                WeaponInfo('Charge Blade', 'charge-blade', 'Charge Blade'),
+                WeaponInfo('Insect Glaive', 'insect-glaive', 'Insect Glaive'),
+                WeaponInfo('Light Bowgun', 'light-bowgun', 'Light Bowgun'),
+                WeaponInfo('Heavy Bowgun', 'heavy-bowgun', 'Heavy Bowgun'),
+                WeaponInfo('Bow', 'bow', 'Bow'),
+                WeaponInfo('Mixed', 'mix', 'Mixed'),
               ]
   
 party_list = [
@@ -172,7 +172,7 @@ class RecordList(ListView):
                 break
         
         weapon_qr = kwargs['weapon']
-        weapon_re = r'.*'
+        weapon_re = ''
         for itr in weapon_list:
             if weapon_qr == itr.urlname:
                 weapon_re = itr.modelname
@@ -193,8 +193,8 @@ class RecordList(ListView):
             if platform_qr == itr.urlname:
                 platform_re = itr.modelname
                 break
-        
-        records = quest.records.filter(party__regex=party_re, weapon__regex=weapon_re, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
+
+        records = quest.records.filter(party__regex=party_re, weapon__name__regex=weapon_re, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
 
         self.object_list = records
         context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list, rule_list=rule_list)
@@ -254,9 +254,9 @@ class Summary(ListView):
         
         records = []
         for i in range(1, 15):
-            wrecords = quest.records.filter(party__regex='S', weapon__regex=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
+            wrecords = quest.records.filter(party__regex='S', weapon__name__regex=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
             if not wrecords:
-                top = Record(runner="NO ENTRY YET", cleartime=timedelta(seconds=3599), weapon=weapon_list[i].modelname)
+                top = Record(runner="NO ENTRY YET", cleartime=timedelta(seconds=3599), weapon=Weapon.objects.filter(name=weapon_list[i].modelname)[0])
                 records.append(top)
             else:
                 records.append(wrecords[0])

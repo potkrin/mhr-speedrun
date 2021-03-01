@@ -84,7 +84,7 @@
           <td>{{ record.runner }}</td>
           <td><a href="{{ record.link }}" target="_blank" rel="noopener noreferrer" class="text-primary">{{ record.cleartime | duration }}</a></td>
           <td>
-          {% with 'cms/weapon_icon/'|add:record.get_weapon_display|add:'.png' as image_static %}
+          {% with 'cms/weapon_icon/'|add:record.weapon.imagepath as image_static %}
             <img src="{% static image_static %}" height=30 alt={{record.get_weapon_display}}>
           {% endwith %}
           </td>

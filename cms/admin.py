@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cms.models import Target, Quest, Record
+from cms.models import Target, Weapon, Quest, Record
 
 # Register your models here.
 
@@ -8,6 +8,13 @@ class TargetAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'monstername', 'imagepath')
 
 admin.site.register(Target, TargetAdmin)
+
+
+class WeaponAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'imagepath',)
+    list_display_links = ('id', 'name', 'imagepath')
+
+admin.site.register(Weapon, WeaponAdmin)
 
 
 class QuestAdmin(admin.ModelAdmin):
