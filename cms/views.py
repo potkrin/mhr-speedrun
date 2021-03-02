@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.generic.list import ListView
 
-from cms.models import Quest, Record, Weapon
-from cms.forms import QuestForm, RecordForm
+from cms.models import Quest, Record, Weapon, Issue
+from cms.forms import QuestForm, RecordForm, IssueForm
 
 # for list sort
 from operator import itemgetter, attrgetter
@@ -135,9 +135,7 @@ class RecordList(ListView):
     def get(self, request, *args, **kwargs):
         quest = get_object_or_404(Quest, pk=kwargs['quest_id'])
 
-        print(quest.recordnum)
         num = quest.records.all().count()
-        print(num)
         quest.recordnum = num
         quest.save()
 
@@ -195,6 +193,9 @@ class RecordList(ListView):
                 break
 
         records = quest.records.filter(party__regex=party_re, weapon__name__regex=weapon_re, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
+# for issue num update (but maybe don't need)
+        for itr in records:
+            itr.problems = Issue.objects.filter(record=itr, open=True).count()
 
         self.object_list = records
         context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list, rule_list=rule_list)
@@ -294,40 +295,31 @@ def record_edit(request, quest_id, record_id=None, conf=None):
     
     return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id))
 
-"""
-def record_confirm(request, quest_id, confirm=None):
-    quest = get_object_or_404(Quest, pk=quest_id)
-    if record_id:
-        record = get_object_or_404(Record, pk=record_id)
-    else:
-        # record = Record()
-    record = Record()
-
-    if request.method == 'POST':
-        if confirm:
-            form = RecordForm(request.POST, instance=record)
-            if form.is_valid():
-                record = form.save(commit=False)
-                record.quest = quest
-                # record.save()
-                return render(request, 'cms/record_confirm.html', dict(form=form, quest_id=quest_id, record_id=record_id))
-        else:
-            form = RecordForm(request.POST, instance=record)
-            if form.is_valid():
-                record = form.save(commit=False)
-                record.quest = quest
-                record.save()
-                return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
-    #else: # GET
-    #    form = RecordForm(instance=record)
-    
-    return render(request, 'cms/record_confirm.html', dict(form=form, quest_id=quest_id, record_id=record_id))
-"""
-
-
 
 def record_del(request, quest_id, record_id):
     """記録の削除"""
     record = get_object_or_404(Record, pk=record_id)
     record.delete()
     return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
+
+
+def issue_edit(request, quest_id, record_id):
+    """問題報告の編集"""
+    record = get_object_or_404(Record, pk=record_id)
+    issue = Issue()
+
+    if request.method == 'POST':
+        form = IssueForm(request.POST, instance=issue)
+        if form.is_valid():
+            issue = form.save(commit=False)
+            issue.record = record 
+            issue.save()
+            record.problems = record.problems + 1
+            record.save()
+            return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
+    else: # GET
+        issue.record = record 
+        form = IssueForm(instance=issue)
+    
+    return render(request, 'cms/issue_edit.html', {'record': record, 'form': form, 'quest_id': quest_id, 'record_id': record_id } )
+

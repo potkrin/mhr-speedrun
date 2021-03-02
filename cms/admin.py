@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cms.models import Target, Weapon, Quest, Record
+from cms.models import Target, Weapon, Quest, Record, Issue
 
 # Register your models here.
 
@@ -28,5 +28,12 @@ class RecordAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'quest', )
     raw_id_fields = ('quest',)
 
-
 admin.site.register(Record, RecordAdmin)
+
+class IssueAdmin(admin.ModelAdmin):
+    list_display = ('id', 'record', 'open', 'request', 'reason', 'detail',)
+    list_display_links = ('id', 'record', 'open', )
+    raw_id_fields = ('record',)
+
+admin.site.register(Issue, IssueAdmin)
+ 

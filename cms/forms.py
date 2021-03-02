@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from cms.models import Quest, Record
+from cms.models import Quest, Record, Issue
 from django import forms
 from django.core.validators import RegexValidator
 
@@ -19,5 +19,20 @@ class RecordForm(ModelForm):
             'cleartime': forms.TextInput(attrs={'placeholder': '12:07.00'}),
 
         }
+
+
+class IssueForm(ModelForm):
+    """記録のフォーム"""
+
+    class Meta:
+        model = Issue 
+        fields = ('request', 'reason', 'detail',)
+        widgets = {
+            #'detail': forms.TextInput(attrs={'placeholder': 'Please input the issue detail.', 'rows':4, 'cols':15}),
+            #'detail': forms.TextInput(attrs={'rows':4, 'cols':15}),
+            'detail': forms.Textarea(attrs={'rows':4, 'cols':15, 'placeholder': 'Please input the issue detail here.'}),
+
+        }
+
 
 

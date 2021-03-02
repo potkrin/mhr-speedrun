@@ -1,0 +1,99 @@
+{% extends "cms/base.html" %}
+{% load bootstrap4 %}
+
+{% load i18n static %}
+
+
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'cms/css/quest-card.css' %}">
+{% endblock %}
+
+
+{% block title %}Submit Issue{% endblock title %}
+
+{% block content %}
+
+    <h4 class="mt-4 mb-5 border-bottom">Submit Issue</h4>
+    <div class="mt-4 text-normal">
+      <div class="quest-card" style="margin:0px">
+          {% with 'cms/monster_icon/'|add:record.quest.target.imagepath as image_static %}
+          <img src="{% static image_static %}" alt={{record.quest.target.monstername}}>
+          {% endwith %}
+          <div class="quest-card__link">
+              {{ record.quest.rank }} {{ record.quest.questname}}<span>({{ record.quest.recordnum }})</span><br>
+              {{ record.quest.questname_j }}
+              </a>
+          </div>
+      </div>
+      <!--
+      <table class="table" style="margin-top:20px; margin-bottom: 50px;">
+        <thead>
+          <tr>
+            <th>Runner</th>
+            <th>Time</th>
+            <th>Weapon</th>
+            <th>PT</th>
+            <th>Rule</th>
+            <th>Platform</th>
+            <th>Problems</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ record.runner }}</td>
+            <td>{{ record.cleartime }}</td>
+            <td>{{ record.weapon.name }}</td>
+            <td>{{ record.get_party_display }}</td>
+            <td>{{ record.get_rules_display }}</td>
+            <td>{{ record.get_platform_display }}</td>
+            <td>{{ record.problems }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <hr>
+    -->
+      <table class="table " style="margin-top: 20px; margin-bottom: 50px;">
+        <tbody>
+          <tr>
+          </tr>
+          <tr>
+            <td>Runner</td>
+            <td>{{ record.runner }}</td>
+          </tr>
+          <tr>
+            <td>Clear Time</td>
+            <td>{{ record.cleartime }}</td>
+          </tr>
+          <tr>
+            <td>Link</td>
+            <td>{{ record.link }}</td>
+          </tr>
+          <tr>
+            <td>Weapon</td>
+            <td>{{ record.weapon.name }}</td>
+          </tr>
+          <tr>
+            <td>Rule</td>
+            <td>{{ record.get_rules_display }}</td>
+          </tr>
+          <tr>
+            <td>Platform</td>
+            <td>{{ record.get_platform_display }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <hr>
+    </div>
+ 
+    <form action="{% url 'cms:issue_submit' quest_id=quest_id record_id=record_id %}" method="post">
+      {% csrf_token %}
+      {% bootstrap_form form layout='horizontal' %}
+      <div class="form-group row">
+        <div class="offset-md-3 col-md-9">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+    <a href="{% url 'cms:record_list' quest_id=quest_id party='solo' weapon='all' rule='all' platform='switch' %}" class="btn btn-secondary btn-sm">Return</a>
+{% endblock content %}
+

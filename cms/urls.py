@@ -19,4 +19,5 @@ urlpatterns = [
     path('record/mod/<int:quest_id>/<int:record_id>/', views.record_edit, name='record_mod'), # modify 
     path('record/mod/<int:quest_id>/<int:record_id>/<int:conf>', views.record_edit, name='record_mod'), # modify 
     path('record/del/<int:quest_id>/<int:record_id>/', views.record_del, name='record_del'),  # delete 
+    path('issue/<int:quest_id>/<int:record_id>/', views.issue_edit, name='issue_submit'), 
 ]

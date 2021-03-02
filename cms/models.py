@@ -54,6 +54,7 @@ class Weapon(models.Model):
         return self.name
 
 
+
 class Quest(models.Model):
     """クエスト"""
     questname = models.CharField('Quest Name', max_length=255)
@@ -75,8 +76,9 @@ class Record(models.Model):
     party = models.CharField('Party', max_length=255, choices=[('S','1'), ('P','2'), ('M', '3or4'),])
     # cleartime = models.DurationField(default=timedelta(minutes=12, seconds=7, milliseconds=780))
     cleartime = models.DurationField()
-    link_regex = RegexValidator(regex=r'^https://www.youtube.com/watch|https://www.nicovideo.jp/watch/|https://www.bilibili.com/video/', message='aaaaaaaaaaaa!!!')
-    link = models.URLField(validators=[link_regex], max_length=2047)
+    link_regex = RegexValidator(regex=r'^https://www.youtube.com/watch|https://www.nicovideo.jp/watch/|https://www.bilibili.com/video/', 
+                                message='aaaaaaaaaaaa!!!')
+    link = models.URLField(validators=[link_regex], max_length=2047, unique=True, help_text="A Video from Youtube, niconico, bilibili is available.", error_messages={'required': 'aa', 'invalid': 'invalid'})
     weapon = models.ForeignKey(Weapon, verbose_name='Weapon', on_delete=models.SET_NULL, null=True)
     """
     weapon = models.CharField('Weapon', max_length=255,
@@ -92,3 +94,17 @@ class Record(models.Model):
 
     def __str__(self):
         return self.runner
+    
+
+class Issue(models.Model):
+    record = models.ForeignKey(Record, verbose_name='Record', related_name='issues', on_delete=models.CASCADE)
+    open = models.BooleanField(verbose_name='open', default=True)
+    request = models.CharField('request', max_length=10, choices=[('M', 'modify'), ('D', 'delete')])
+    reason = models.CharField('reason', max_length=10, choices=[('C/B', 'cheat/bug'), ('M', 'miss input'), ('AR', 'against rule'), ('O', 'other')])
+    detail = models.TextField(verbose_name='issue detail', max_length=1000, null=True, blank=True)
+
+    def __str__(self):
+        return self.request
+ 
+
+
