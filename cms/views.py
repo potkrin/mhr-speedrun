@@ -15,6 +15,9 @@ from django.urls import reverse
 # to get client ipaddress
 from ipware import get_client_ip
 
+# for login_required
+from django.contrib.auth.decorators import login_required
+
 def quest_list(request):
     """クエストの一覧"""
     # return HttpResponse('List of Quest')
@@ -280,7 +283,7 @@ class Summary(ListView):
 
 
 
-
+@login_required
 def record_edit(request, quest_id, record_id=None, conf=None):
     """記録の編集"""
     quest = get_object_or_404(Quest, pk=quest_id)

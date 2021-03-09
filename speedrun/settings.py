@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cms.apps.CmsConfig',
     'bootstrap4',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',    # ソーシャル連携認証を使っていない場合でも必要
 ]
 
 MIDDLEWARE = [
@@ -50,6 +54,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# allauth needs this
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'speedrun.urls'
@@ -65,6 +75,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # `allauth` needs this from django
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -124,3 +136,26 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# for allauth authentication
+# sitesフレームワーク用のサイトID
+SITE_ID = 1
+
+# ログイン・ログアウト時のリダイレクト先
+LOGIN_REDIRECT_URL = '/cms/quest/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# 認証方式を「メルアドとパスワード」に設定
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+# ユーザ名は使用しない
+ACCOUNT_USERNAME_REQUIRED = True 
+
+# ユーザ登録時に確認メールを送信するか(none=送信しない, mandatory=送信する)
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_REQUIRED = False # ユーザ登録にメルアド必須にする
+
+## 自動でアカウントのセッションを保持(いちいちユーザーネームとパスワードを要求しない)
+# ACCOUNT_SESSION_REMEMBER = True 
+## ユーザー登録時にパスワードの要求を一回にする
+# ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False 
+## ログアウトをクリックしたらログアウト確認画面を経由しないで直接ログアウト
+# ACCOUNT_LOGOUT_ON_GET = True 
