@@ -1,15 +1,35 @@
 {% extends "cms/base.html" %}
 
+{% load i18n static %}
+
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'cms/css/quest-card.css' %}">
+{% endblock %}
+
 {% block title %}Record List{% endblock title %}
 
 {% block content %}
 
 
 
-{% load i18n static %}
 {% load tpfilters %}
 
-    <h4 class="mt-4 border-bottom">Record List<small class="text-muted ml-3">{{ quest.questname}}</small></h4>
+    <h4 class="mt-4 border-bottom">Record List<!--<small class="text-muted ml-3">{{ quest.questname}}</small>--></h4>
+
+
+        <div class="mt-4 text-normal">
+          <div class="quest-card-recordlist" >
+              {% with 'cms/monster_icon/'|add:quest.target.imagepath as image_static %}
+              <img src="{% static image_static %}" alt={{quest.target.monstername}}>
+              {% endwith %}
+              <div >
+                  {{ quest.rank }} {{ quest.questname}}<span>({{ quest.recordnum }})</span><br> 
+                  {{ quest.questname_j }}
+                  </a>
+              </div>
+          </div>
+        </div>
+    
         <div class="row ml-0 flex-nowrap">
           <div class="dropdown ml-0">
             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -67,6 +87,7 @@
         </div>
 
     <a href="{% url 'cms:record_add' quest_id=quest.id %}" class="btn btn-primary btn-sm my-3">Submit</a>
+    <!-- <a href="{% url 'cms:quest_list' %}" class="btn btn-secondary btn-sm">戻る</a> -->
     <table class="table table-striped table-bordered">
       <thead>
         <tr>
@@ -128,7 +149,7 @@
     </nav>
     {% endif %}
 
-    <a href="{% url 'cms:quest_list' %}" class="btn btn-secondary btn-sm">戻る</a>
+    
 
     {# 削除を確認するモーダル ダイアログ #}
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

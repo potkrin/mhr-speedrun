@@ -1,11 +1,29 @@
 {% extends "cms/base.html" %}
+
+{% load i18n static %}
 {% load bootstrap4 %}
+
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'cms/css/quest-card.css' %}">
+{% endblock %}
 
 {% block title %}Record Edit{% endblock title %}
 
 {% block content %}
 
     <h4 class="mt-4 mb-5 border-bottom">Record Edit</h4>
+
+    <div class="quest-card" style="margin:6px 0px 24px 0px;">
+        {% with 'cms/monster_icon/'|add:quest.target.imagepath as image_static %}
+        <img src="{% static image_static %}" alt={{quest.target.monstername}}>
+        {% endwith %}
+        <div class="quest-card__link">
+            <a href="{% url 'cms:record_list' quest_id=quest.id party='solo' weapon='all' rule='all' platform='switch' %}">{{ quest.rank }} {{ quest.questname}}<span>({{ quest.recordnum }})</span><br>
+            {% comment %} {{ record.quest.rank }} {{ record.quest.questname}}<span>({{ record.quest.recordnum }})</span><br> {% endcomment %}
+            {{ quest.questname_j }}
+            </a>
+        </div>
+    </div>
 
     {% if noconf %}
     <h5 class="mt-4 text-danger">

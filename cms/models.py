@@ -1,6 +1,7 @@
 from django.db import models
 
 from datetime import timedelta
+from django.utils import timezone
 from django.core.validators import RegexValidator
 
 import ast
@@ -91,6 +92,8 @@ class Record(models.Model):
     rules = models.CharField('Rules', max_length=255, choices=[('FR','FreeStyle'), ('TW','TA wiki'), ('PD','Production'), ])
     platform = models.CharField('PlatForms', max_length=255, choices=[('SW','Switch'), ('PC','PC'),])
     problems = models.IntegerField('Problem report', blank=True, default=0)
+    regist_date = models.DateTimeField(default=timezone.now)
+    ipaddr = models.GenericIPAddressField(verbose_name="client-ipaddress", default="127.0.0.1")
 
     def __str__(self):
         return self.runner

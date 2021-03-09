@@ -24,7 +24,7 @@ class QuestAdmin(admin.ModelAdmin):
 admin.site.register(Quest, QuestAdmin)
 
 class RecordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'quest', 'runner', 'party', 'cleartime', 'weapon', 'rules', 'platform',)
+    list_display = ('id', 'quest', 'runner', 'party', 'cleartime', 'weapon', 'rules', 'platform', 'regist_date')
     list_display_links = ('id', 'quest', )
     raw_id_fields = ('quest',)
 

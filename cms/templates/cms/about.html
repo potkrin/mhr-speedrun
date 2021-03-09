@@ -1,0 +1,49 @@
+{% extends "cms/base.html" %}
+{% load bootstrap4 %}
+
+{% block title %}About{% endblock title %}
+
+{% block content %}
+
+
+  {% if nav == 'R' %}
+  Their will be 3 types of rules.
+  <ul>
+    <li>Free Style</li>
+    <li>TA-wiki Rules</li>
+    <li>Production Equipment(To exclude luck factor of weapon/equipment.)</li>
+  </ul>
+  {% endif %}
+ 
+  {% if nav == 'S' %}
+    <h4 class="mt-4 mb-5 border-bottom">About submission</h4>
+    <ul>
+      <li>You can submit any records you know(including under top 3 records) if the record is valid.</li>
+      <li>The records needs a video either on Youtube, Niconico, or Bilibili.</li>
+      <li>Submission will appear immediately on the list!</li>
+      <li>This site doesn't check the validation of the video contents(link miss, breaking rules, etc...), so please be careful on the submission.
+      </li>
+      <li>If you find problems about the record on the list, please submit issues from issue button.</li>
+    </ul>
+
+
+    To submit the record you know,
+    <ol>
+      <li>Go to quest list page and click the quest of the record.</li>
+      <li>Check the record list that your submission is still not on the list.</li>
+      <li>Click the submit button on top of the list, and fill the form.</li>
+      <li>Check the information you filled and submit!</li>
+    </ol>
+  {% endif %}
+ 
+  {% if nav == 'A' %}
+    <h4 class="mt-4 mb-5 border-bottom">About this site</h4>
+    This site is for gathering speedruns of MH:Rise.<br>
+    Please submit the records you know and help making this site useful for all players!<br>
+    This site can't check the validation of the speedrun (link miss, breaking rules, etc...), so please be careful on the submission.<br>
+ 
+
+  {% endif %}
+
+{% endblock content %}
+

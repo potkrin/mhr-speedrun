@@ -20,7 +20,8 @@
           <img src="{% static image_static %}" alt={{record.quest.target.monstername}}>
           {% endwith %}
           <div class="quest-card__link">
-              {{ record.quest.rank }} {{ record.quest.questname}}<span>({{ record.quest.recordnum }})</span><br>
+              <a href="{% url 'cms:record_list' quest_id=record.quest.id party='solo' weapon='all' rule='all' platform='switch' %}">{{ record.quest.rank }} {{ record.quest.questname}}<span>({{ record.quest.recordnum }})</span><br>
+              {% comment %} {{ record.quest.rank }} {{ record.quest.questname}}<span>({{ record.quest.recordnum }})</span><br> {% endcomment %}
               {{ record.quest.questname_j }}
               </a>
           </div>
@@ -84,8 +85,18 @@
       </table>
       <hr>
     </div>
+
+    {% if accept %}
+    <div class="mt-4 normal-text">
+      <h5>
+        Your submission has been accepted.<br>Thank you for the issue report!
+      </h5>
+    </div>
+     <a href="{% url 'cms:record_list' quest_id=quest_id party='solo' weapon='all' rule='all' platform='switch' %}" class="btn btn-secondary btn-sm">Return</a>
  
-    <form action="{% url 'cms:issue_submit' quest_id=quest_id record_id=record_id %}" method="post">
+    {% else %}
+    {{ accept }}
+    <form action="{% url 'cms:issue_submit' quest_id=quest_id record_id=record_id accept=1%}" method="post">
       {% csrf_token %}
       {% bootstrap_form form layout='horizontal' %}
       <div class="form-group row">
@@ -95,5 +106,8 @@
       </div>
     </form>
     <a href="{% url 'cms:record_list' quest_id=quest_id party='solo' weapon='all' rule='all' platform='switch' %}" class="btn btn-secondary btn-sm">Return</a>
+ 
+    {% endif %}
+
 {% endblock content %}
 

@@ -10,7 +10,7 @@
 
 
 {% block content %}
-
+<!--
 <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
   <a class="navbar-brand" href="#">MHRise: Speedrun share</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +26,46 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Submit</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+-->
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+  <a class="navbar-brand" href="{% url 'cms:quest_list' %}">MHRise: Speedrun share</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      {% if nav == 'Q' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="{% url 'cms:quest_list' %}">Quest{% if not about %}<span class="sr-only">(current)</span>{% endif %}</a>
+      </li>
+      {% if nav == 'R' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="{% url 'cms:about' nav='rules' %}">Rules</a>
+      </li>
+      {% if nav == 'S' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="{% url 'cms:about' nav='submit' %}">Submit</a>
+      </li>
+      {% if nav == 'A' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="{% url 'cms:about' nav='site' %}">About</a>
       </li>
     </ul>
   </div>

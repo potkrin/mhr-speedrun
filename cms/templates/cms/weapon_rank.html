@@ -1,13 +1,29 @@
 {% extends "cms/base.html" %}
 
+{% load i18n static %}
+{% block extra_css %}  
+<link rel="stylesheet" href="{% static 'cms/css/quest-card.css' %}">
+{% endblock %}
 {% block title %}Record List{% endblock title %}
 
 {% block content %}
 
-{% load i18n static %}
 {% load tpfilters %}
 
-    <h4 class="mt-4 border-bottom">Record List<small class="text-muted ml-3">{{ quest.questname}}</small></h4>
+    <h4 class="mt-4 border-bottom">Record List<!--<small class="text-muted ml-3">{{ quest.questname}}</small>--></h4>
+
+        <div class="mt-4 text-normal">
+          <div class="quest-card-recordlist" >
+              {% with 'cms/monster_icon/'|add:quest.target.imagepath as image_static %}
+              <img src="{% static image_static %}" alt={{quest.target.monstername}}>
+              {% endwith %}
+              <div >
+                  {{ quest.rank }} {{ quest.questname}}<span>({{ quest.recordnum }})</span><br> 
+                  {{ quest.questname_j }}
+                  </a>
+              </div>
+          </div>
+        </div>
 
         <div class="row ml-0 flex-nowrap">
           <div class="dropdown">

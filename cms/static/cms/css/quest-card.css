@@ -80,3 +80,37 @@ body {
     /*background-color:black;*/
     }
 
+/* record_list 用(リンクが不要) */
+.quest-card-recordlist{
+    position: relative;
+    z-index: 1; /* 必要であればリンク要素の重なりのベース順序指定 */ 
+    min-height:58px;
+    overflow:visible;
+    background-color:rgb(255, 255, 255);
+    display:flex;
+    padding:0.5em;
+    align-items:center;
+    position:relative;
+    transition:color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out,
+    box-shadow .15s ease-in-out;
+    outline:1px solid  rgb(200, 200, 200);
+    margin-top:12px;
+    margin-bottom:24px;
+}
+
+.quest-card-recordlist img {
+    margin-top:0px;
+    margin-bottom: 0px;
+    margin-right: 16px;
+    margin-left: 0px;
+    height:48px;
+    display:inline-block;
+}
+
+.quest-card-recordlist div {display: inline-block;}
+
+.quest-card-recordlist {
+    position: relative;
+}

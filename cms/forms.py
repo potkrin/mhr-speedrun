@@ -17,7 +17,8 @@ class RecordForm(ModelForm):
         fields = ('quest', 'runner', 'party', 'cleartime', 'link', 'weapon', 'rules', 'platform', 'problems',)
         widgets = {
             'cleartime': forms.TextInput(attrs={'placeholder': '12:07.00'}),
-
+            'quest': forms.HiddenInput(),
+            'problems': forms.HiddenInput(),
         }
 
 

@@ -10,12 +10,17 @@ from operator import itemgetter, attrgetter
 from datetime import timedelta
 # Create your views here.
 
+from django.urls import reverse
+
+# to get client ipaddress
+from ipware import get_client_ip
+
 def quest_list(request):
     """クエストの一覧"""
     # return HttpResponse('List of Quest')
     quests = Quest.objects.all().order_by('priority')
     return render(request, 'cms/quest_list.html',  # 使用するテンプレート
-                           {'quests': quests})     # テンプレートに渡すデータ
+                           {'quests': quests, 'nav': 'Q'})     # テンプレートに渡すデータ
 
 
 def quest_edit(request, quest_id=None):
@@ -255,12 +260,17 @@ class Summary(ListView):
         
         records = []
         for i in range(1, 15):
-            wrecords = quest.records.filter(party__regex='S', weapon__name__regex=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
+            #print(weapon_list[i].modelname)
+            wrecords = quest.records.filter(party__regex='S', weapon__name=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
             if not wrecords:
+                #print("no rec")
                 top = Record(runner="NO ENTRY YET", cleartime=timedelta(seconds=3599), weapon=Weapon.objects.filter(name=weapon_list[i].modelname)[0])
                 records.append(top)
             else:
+                #print("found")
                 records.append(wrecords[0])
+        #for i in records:
+            #print(i.weapon)
         records = sorted(records, key=attrgetter('cleartime'))
         ### add for ranking end
 
@@ -282,10 +292,12 @@ def record_edit(request, quest_id, record_id=None, conf=None):
     if request.method == 'POST':
         form = RecordForm(request.POST, instance=record)
         if conf == 1 or not form.is_valid():
-            return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, noconf=1))
+            return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, noconf=1, quest=quest))
 
         if form.is_valid():
             record = form.save(commit=False)
+            client_addr, _ = get_client_ip(request)
+            record.ipaddr = client_addr
             record.quest = quest
             record.save()
             return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
@@ -293,7 +305,7 @@ def record_edit(request, quest_id, record_id=None, conf=None):
         record.quest = quest
         form = RecordForm(instance=record)
     
-    return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id))
+    return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, quest=quest))
 
 
 def record_del(request, quest_id, record_id):
@@ -303,7 +315,7 @@ def record_del(request, quest_id, record_id):
     return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
 
 
-def issue_edit(request, quest_id, record_id):
+def issue_edit(request, quest_id, record_id, accept=None):
     """問題報告の編集"""
     record = get_object_or_404(Record, pk=record_id)
     issue = Issue()
@@ -316,10 +328,38 @@ def issue_edit(request, quest_id, record_id):
             issue.save()
             record.problems = record.problems + 1
             record.save()
-            return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
+            #return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
+            context = dict(accept=1)
+            # return redirect('cms:issue_submit', {quest_id=quest_id, record_id=record_id, accept=1} context=context ) 
+            return render(request, 'cms/issue_edit.html', {'record': record, 'form': form, 'quest_id': quest_id, 'record_id': record_id, 'accept': 1} )
+
+
+
     else: # GET
         issue.record = record 
         form = IssueForm(instance=issue)
     
-    return render(request, 'cms/issue_edit.html', {'record': record, 'form': form, 'quest_id': quest_id, 'record_id': record_id } )
+    return render(request, 'cms/issue_edit.html', {'record': record, 'form': form, 'quest_id': quest_id, 'record_id': record_id, } )
+
+def about_site(request, nav):
+    if nav=="rules":
+        nav = 'R'
+    elif nav=="submit":
+        nav = 'S'
+    elif nav=="site":
+        nav = 'A'
+    
+    client_addr, _ = get_client_ip(request)
+    print(client_addr)
+
+    """サイト概要"""
+    return render(request, 'cms/about.html', {'nav_site': 1, 'nav': nav})
+
+def about_rules(request):
+    """ルールについてヘルプ画面"""
+    return render(request, 'cms/about.html', {'nav_rules': 1})
+
+def about_submit(request):
+    """提出方法についてのヘルプ画面"""
+    return render(request, 'cms/about.html', {'nav_submit': 1})
 
