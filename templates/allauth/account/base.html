@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'cms/css/bootstrap.min.css' %}">
+    <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
+  </head>
+  <body>
+    {% block body %}
+    <div class="container">
+      {% if messages %}
+      <div>
+        <strong>Messages:</strong>
+        <ul class="list-group">
+          {% for message in messages %}
+          <li class="list-group-item">{{message}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+
+      {% comment %}
+      <div>
+        Menu:
+        <ul class="list-group">
+          {% if user.is_authenticated %}
+          <li class="list-group-item"><a href="{% url 'account_email' %}">Change E-mail</a></li>
+          <li class="list-group-item"><a href="{% url 'account_logout' %}">Sign Out</a></li>
+          {% else %}
+          <li class="list-group-item"><a href="{% url 'account_login' %}">Sign In</a></li>
+          <li class="list-group-item"><a href="{% url 'account_signup' %}">Sign Up</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endcomment %}
+      
+      {% block content %}
+      {% endblock %}
+
+    </div>
+    {% endblock %}
+    {% block extra_body %}
+    {% endblock %}
+<script src="{% static 'cms/js/jquery-3.5.1.min.js' %}"></script>
+<script src="{% static 'cms/js/bootstrap.bundle.min.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

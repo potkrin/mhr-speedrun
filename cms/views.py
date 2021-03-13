@@ -18,6 +18,8 @@ from ipware import get_client_ip
 # for login_required
 from django.contrib.auth.decorators import login_required
 
+from django.views.generic import DetailView
+
 def quest_list(request):
     """クエストの一覧"""
     # return HttpResponse('List of Quest')
@@ -281,14 +283,109 @@ class Summary(ListView):
         context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list)
         return self.render_to_response(context)
 
+"""
+class UserSubList(DetailView):
+    context_object_name = 'records'
+    template_name = 'cms/usersub_list.html'
+
+
+    @login_required
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        ###
+        quest = get_object_or_404(Quest, pk=kwargs['quest_id'])
+
+        num = quest.records.all().count()
+        quest.recordnum = num
+        quest.save()
+
+        st = PageStatus()
+        st.party = kwargs['party']
+        st.weapon = kwargs['weapon']
+        st.rule = kwargs['rule']
+        st.platform = kwargs['platform']
+
+        if st.rule == 'all':
+            st.free = 'checked'
+        elif st.rule == 'ta-wiki':
+            st.tawiki = 'checked'
+        elif st.rule == 'production':
+            st.product = 'checked'
+
+        if st.platform == 'all':
+            st.plat_all= 'checked'
+        elif st.platform == 'switch':
+            st.switch = 'checked'
+        elif st.platform == 'pc':
+            st.pc = 'checked'
+        
+        st.record_list = 'checked'
+        
+        # make regular expression for DB from URL path
+        party_qr = kwargs['party']
+        for itr in party_list:
+            if party_qr == itr.urlname:
+                party_re = itr.modelname
+                st.party_name = itr.name
+                break
+        
+        weapon_qr = kwargs['weapon']
+        weapon_re = ''
+        for itr in weapon_list:
+            if weapon_qr == itr.urlname:
+                weapon_re = itr.modelname
+                if itr.name != 'All':
+                    st.weapon_name = itr.name
+                else:
+                    st.weapon_name = 'Weapon'
+                break
+
+        rule_qr = kwargs['rule']
+        for itr in rule_list:
+            if rule_qr == itr.urlname:
+                rule_re = itr.modelname
+                break
+        
+        platform_qr = kwargs['platform']
+        for itr in platform_list:
+            if platform_qr == itr.urlname:
+                platform_re = itr.modelname
+                break
+        ###
+                
+        # records = quest.records.filter(party__regex=party_re, weapon__name__regex=weapon_re, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
+        user = request.user
+        records = Record.objects.filter(submitter=user).order_by('regist_date')
+        # for issue num update (but maybe don't need)
+        for itr in records:
+            itr.problems = Issue.objects.filter(record=itr, open=True).count()
+
+        self.object_list = records
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)
+"""
+
+@login_required
+def usersub_list(request):
+    # quests = Quest.objects.all().order_by('priority')
+    user = request.user
+    records = Record.objects.filter(submitter=user).order_by('regist_date')
+    return render(request, 'cms/usersub_list.html',  # 使用するテンプレート
+                           {'records': records, 'nav': 'U', 'user': user})     # テンプレートに渡すデータ
+
 
 
 @login_required
 def record_edit(request, quest_id, record_id=None, conf=None):
     """記録の編集"""
     quest = get_object_or_404(Quest, pk=quest_id)
+    user = request.user
+    print(user.username)
     if record_id:
         record = get_object_or_404(Record, pk=record_id)
+        if record.submitter != user:
+            print("permission denyed")
+            return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
     else:
         record = Record()
 
@@ -302,19 +399,21 @@ def record_edit(request, quest_id, record_id=None, conf=None):
             client_addr, _ = get_client_ip(request)
             record.ipaddr = client_addr
             record.quest = quest
+            record.submitter = user
             record.save()
             return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
     else: # GET
         record.quest = quest
         form = RecordForm(instance=record)
     
-    return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, quest=quest))
+    return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, quest=quest, user=user))
 
 
 def record_del(request, quest_id, record_id):
     """記録の削除"""
     record = get_object_or_404(Record, pk=record_id)
-    record.delete()
+    if record.submitter.username == request.user.username:
+        record.delete()
     return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
 
 

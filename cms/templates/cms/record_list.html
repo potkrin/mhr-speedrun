@@ -13,8 +13,13 @@
 
 
 {% load tpfilters %}
+{% load humanize %}
 
     <h4 class="mt-4 border-bottom">Record List<!--<small class="text-muted ml-3">{{ quest.questname}}</small>--></h4>
+
+    {% if alert == 'D' %}
+    <h5 class="text-danger">You don't have the access right to the record.</h5>
+    {% endif%}
 
 
         <div class="mt-4 text-normal">
@@ -97,6 +102,7 @@
           <th>PT</th>
           <th>Rule</th>
           <th>Platform</th>
+          <th>Date</th>
           <th>Problems</th>
           <th>Operation</th>
         </tr>
@@ -114,6 +120,7 @@
           <td>{{ record.get_party_display }}</td>
           <td>{{ record.get_rules_display }}</td>
           <td>{{ record.get_platform_display }}</td>
+          <td>{{ record.regist_date|naturaltime }}</td>
           <td>{{ record.problems }}</td>
           <td>
             <a href="{% url 'cms:issue_submit' quest_id=quest.id record_id=record.id %}" class="btn btn-outline-primary btn-sm">issue</a>
