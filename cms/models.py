@@ -3,6 +3,7 @@ from django.db import models
 from datetime import timedelta
 from django.utils import timezone
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
 
 import ast
 class ListField(models.TextField):
@@ -94,6 +95,7 @@ class Record(models.Model):
     problems = models.IntegerField('Problem report', blank=True, default=0)
     regist_date = models.DateTimeField(default=timezone.now)
     ipaddr = models.GenericIPAddressField(verbose_name="client-ipaddress", default="127.0.0.1")
+    submitter = models.ForeignKey(User, verbose_name='record_submitter', related_name='records', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.runner

@@ -27,13 +27,17 @@
 
     {% if noconf %}
     <h5 class="mt-4 text-danger">
-    You can't delete the record after you submit! <br>
-    Please check your input again.
+    Please check your input again!
     </h5>
     {% endif %}
  
     {% if record_id %}
-    <form action="{% url 'cms:record_mod' quest_id=quest_id record_id=record_id conf=1 %}" method="post">
+      {% if noconf %}
+      <form action="{% url 'cms:record_mod' quest_id=quest_id record_id=record_id %}" method="post">
+      {% else %}
+      <form action="{% url 'cms:record_mod' quest_id=quest_id record_id=record_id conf=1 %}" method="post">
+      {% endif %}
+ 
     {% else %}
       {% if noconf %}
       <form action="{% url 'cms:record_add' quest_id=quest_id %}" method="post">
@@ -49,5 +53,6 @@
         </div>
       </div>
     </form>
-    <a href="{% url 'cms:record_list' quest_id=quest_id party='solo' weapon='all' rule='all' platform='switch' %}" class="btn btn-secondary btn-sm">Return</a>
+    <!-- <a href="{% url 'cms:record_list' quest_id=quest_id party='solo' weapon='all' rule='all' platform='switch' %}" class="btn btn-secondary btn-sm">Return</a>
+    -->
 {% endblock content %}

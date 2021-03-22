@@ -46,6 +46,26 @@
         <a class="nav-link" href="{% url 'cms:about' nav='site' %}">About</a>
       </li>
     </ul>
+    <ul class="navbar-nav">
+      {% if nav == 'U' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="{% url 'cms:usersub_list' %}">Your Submission</a>
+      </li>
+      {% if nav == 'L' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+      {% if request.user.is_authenticated %}
+        <a class="nav-link" href="/accounts/logout">Logout</a>
+      {% else %}
+        <a class="nav-link" href="/accounts/login">Login</a>
+      {% endif %}
+      </li>
+    </ul>
   </div>
 </nav>
   <div class="container">

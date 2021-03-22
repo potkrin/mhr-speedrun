@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView   # 追加
 
 urlpatterns = [
     path('cms/', include('cms.urls')),
     path('admin/', admin.site.urls),
+    # path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('django.contrib.auth.urls')), # 不要
 ]

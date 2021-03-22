@@ -13,6 +13,7 @@ urlpatterns = [
 
     # Records
     # path('record/<int:quest_id>/', views.RecordList.as_view(), name='record_list'),    # List
+    path('record/user_submission/', views.usersub_list, name='usersub_list'),    # List
     path('record/<int:quest_id>/<str:party>/<str:weapon>/<str:rule>/<str:platform>/', views.RecordList.as_view(), name='record_list'),    # List
     path('record/<int:quest_id>/<str:party>/<str:rule>/<str:platform>/', views.Summary.as_view(), name='weapon_rank'),    # List
     path('record/add/<int:quest_id>/', views.record_edit, name='record_add'), # add 

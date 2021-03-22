@@ -68,13 +68,41 @@
         <a class="nav-link" href="{% url 'cms:about' nav='site' %}">About</a>
       </li>
     </ul>
+    <ul class="navbar-nav">
+      {% if nav == 'U' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="{% url 'cms:usersub_list' %}">Your Submission</a>
+      </li>
+      {% if nav == 'L' %}
+      <li class="nav-item active">
+      {% else %}
+      <li class="nav-item">
+      {% endif %}
+      {% if request.user.is_authenticated %}
+        <a class="nav-link" href="/accounts/logout">Logout</a>
+      {% else %}
+        <a class="nav-link" href="/accounts/login">Login</a>
+      {% endif %}
+      </li>
+    </ul>
   </div>
 </nav>
     <!--<h4 class="mt-4 border-bottom">Quest List</h4>
     <a href="{% url 'cms:quest_add' %}" class="btn btn-primary btn-sm my-3">Add</a>
     -->
 
-
+    <div style="margin: 30px">
+      <h3>Welcome MH:Rise Hunters!</h3>
+      <div class="text-normal">
+        This site tracks speedruns of MH:Rise.<br><br>
+        You can submit any records you know.
+        Please help us making the record list more useful.<br>
+        Waiting for your submission!
+      </div>
+    </div>
 
     <div class="card-list" >
     {% for quest in quests %}

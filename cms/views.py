@@ -15,6 +15,11 @@ from django.urls import reverse
 # to get client ipaddress
 from ipware import get_client_ip
 
+# for login_required
+from django.contrib.auth.decorators import login_required
+
+from django.views.generic import DetailView
+
 def quest_list(request):
     """クエストの一覧"""
     # return HttpResponse('List of Quest')
@@ -259,33 +264,58 @@ class Summary(ListView):
                 break
         
         records = []
+        summary_list = []
+        for j in range(0, 14):
+            summary_list.append([])
+            for k in range(0, 4):
+                summary_list[j].append('-')
+
         for i in range(1, 15):
-            #print(weapon_list[i].modelname)
             wrecords = quest.records.filter(party__regex='S', weapon__name=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
             if not wrecords:
-                #print("no rec")
                 top = Record(runner="NO ENTRY YET", cleartime=timedelta(seconds=3599), weapon=Weapon.objects.filter(name=weapon_list[i].modelname)[0])
                 records.append(top)
+                summary_list[i-1][0] = top
             else:
-                #print("found")
                 records.append(wrecords[0])
+                # for weapon top 3
+                summary_list.append([])
+                for k in range(0, len(wrecords)):
+                    if k == 0:
+                        summary_list[i-1][k] = wrecords[k]
+                    summary_list[i-1][k+1] = wrecords[k]
+
         #for i in records:
             #print(i.weapon)
         records = sorted(records, key=attrgetter('cleartime'))
         ### add for ranking end
 
         self.object_list = records
-        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list)
+        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list, summary_list=summary_list)
         return self.render_to_response(context)
 
 
+@login_required
+def usersub_list(request):
+    # quests = Quest.objects.all().order_by('priority')
+    user = request.user
+    records = Record.objects.filter(submitter=user).order_by('regist_date')
+    return render(request, 'cms/usersub_list.html',  # 使用するテンプレート
+                           {'records': records, 'nav': 'U', 'user': user})     # テンプレートに渡すデータ
 
 
+
+@login_required
 def record_edit(request, quest_id, record_id=None, conf=None):
     """記録の編集"""
     quest = get_object_or_404(Quest, pk=quest_id)
+    user = request.user
+    print(user.username)
     if record_id:
         record = get_object_or_404(Record, pk=record_id)
+        if record.submitter != user:
+            print("permission denyed")
+            return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
     else:
         record = Record()
 
@@ -299,19 +329,21 @@ def record_edit(request, quest_id, record_id=None, conf=None):
             client_addr, _ = get_client_ip(request)
             record.ipaddr = client_addr
             record.quest = quest
+            record.submitter = user
             record.save()
             return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
     else: # GET
         record.quest = quest
         form = RecordForm(instance=record)
     
-    return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, quest=quest))
+    return render(request, 'cms/record_edit.html', dict(form=form, quest_id=quest_id, record_id=record_id, quest=quest, user=user))
 
 
 def record_del(request, quest_id, record_id):
     """記録の削除"""
     record = get_object_or_404(Record, pk=record_id)
-    record.delete()
+    if record.submitter.username == request.user.username:
+        record.delete()
     return redirect('cms:record_list', quest_id=quest_id, party='solo', weapon='all', rule='all', platform='switch')
 
 
@@ -333,8 +365,6 @@ def issue_edit(request, quest_id, record_id, accept=None):
             # return redirect('cms:issue_submit', {quest_id=quest_id, record_id=record_id, accept=1} context=context ) 
             return render(request, 'cms/issue_edit.html', {'record': record, 'form': form, 'quest_id': quest_id, 'record_id': record_id, 'accept': 1} )
 
-
-
     else: # GET
         issue.record = record 
         form = IssueForm(instance=issue)
@@ -353,7 +383,7 @@ def about_site(request, nav):
     print(client_addr)
 
     """サイト概要"""
-    return render(request, 'cms/about.html', {'nav_site': 1, 'nav': nav})
+    return render(request, 'cms/about.html', {'nav_site': 1, 'nav': nav,})
 
 def about_rules(request):
     """ルールについてヘルプ画面"""
