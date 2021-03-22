@@ -267,19 +267,23 @@ class Summary(ListView):
         summary_list = []
         for j in range(0, 14):
             summary_list.append([])
+            for k in range(0, 4):
+                summary_list[j].append('-')
 
         for i in range(1, 15):
-            #print(weapon_list[i].modelname)
             wrecords = quest.records.filter(party__regex='S', weapon__name=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
             if not wrecords:
-                #print("no rec")
                 top = Record(runner="NO ENTRY YET", cleartime=timedelta(seconds=3599), weapon=Weapon.objects.filter(name=weapon_list[i].modelname)[0])
                 records.append(top)
+                summary_list[i-1][0] = top
             else:
-                #print("found")
                 records.append(wrecords[0])
-                for j in range(0, len(wrecords)):
-                    summary_list[i-1].append(wrecords[j])
+                # for weapon top 3
+                summary_list.append([])
+                for k in range(0, len(wrecords)):
+                    if k == 0:
+                        summary_list[i-1][k] = wrecords[k]
+                    summary_list[i-1][k+1] = wrecords[k]
 
         #for i in records:
             #print(i.weapon)

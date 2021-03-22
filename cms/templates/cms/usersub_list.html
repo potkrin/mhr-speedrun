@@ -34,7 +34,11 @@
       <tbody>
         {% for record in records %}
         <tr>
-          <td>{{ record.quest.questname }}<br>{{ record.quest.questname_j }}</td>
+          <td>
+            <a href="{% url 'cms:record_list' quest_id=record.quest.id party='solo' weapon='all' rule='all' platform='switch' %}" class="text-secondary">{{ record.quest.rank }} {{ record.quest.questname}}<br>
+            {{ record.quest.questname_j }}
+            </a>
+          </td>
           <td>{{ record.runner }}</td>
           <td><a href="{{ record.link }}" target="_blank" rel="noopener noreferrer" class="text-primary">{{ record.cleartime | duration }}</a></td>
           <td>
