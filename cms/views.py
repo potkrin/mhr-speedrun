@@ -264,6 +264,10 @@ class Summary(ListView):
                 break
         
         records = []
+        summary_list = []
+        for j in range(0, 14):
+            summary_list.append([])
+
         for i in range(1, 15):
             #print(weapon_list[i].modelname)
             wrecords = quest.records.filter(party__regex='S', weapon__name=weapon_list[i].modelname, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
@@ -274,96 +278,18 @@ class Summary(ListView):
             else:
                 #print("found")
                 records.append(wrecords[0])
+                for j in range(0, len(wrecords)):
+                    summary_list[i-1].append(wrecords[j])
+
         #for i in records:
             #print(i.weapon)
         records = sorted(records, key=attrgetter('cleartime'))
         ### add for ranking end
 
         self.object_list = records
-        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list)
+        context = self.get_context_data(object_list=self.object_list, quest=quest, st=st, weapon_list=weapon_list, party_list=party_list, summary_list=summary_list)
         return self.render_to_response(context)
 
-"""
-class UserSubList(DetailView):
-    context_object_name = 'records'
-    template_name = 'cms/usersub_list.html'
-
-
-    @login_required
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        ###
-        quest = get_object_or_404(Quest, pk=kwargs['quest_id'])
-
-        num = quest.records.all().count()
-        quest.recordnum = num
-        quest.save()
-
-        st = PageStatus()
-        st.party = kwargs['party']
-        st.weapon = kwargs['weapon']
-        st.rule = kwargs['rule']
-        st.platform = kwargs['platform']
-
-        if st.rule == 'all':
-            st.free = 'checked'
-        elif st.rule == 'ta-wiki':
-            st.tawiki = 'checked'
-        elif st.rule == 'production':
-            st.product = 'checked'
-
-        if st.platform == 'all':
-            st.plat_all= 'checked'
-        elif st.platform == 'switch':
-            st.switch = 'checked'
-        elif st.platform == 'pc':
-            st.pc = 'checked'
-        
-        st.record_list = 'checked'
-        
-        # make regular expression for DB from URL path
-        party_qr = kwargs['party']
-        for itr in party_list:
-            if party_qr == itr.urlname:
-                party_re = itr.modelname
-                st.party_name = itr.name
-                break
-        
-        weapon_qr = kwargs['weapon']
-        weapon_re = ''
-        for itr in weapon_list:
-            if weapon_qr == itr.urlname:
-                weapon_re = itr.modelname
-                if itr.name != 'All':
-                    st.weapon_name = itr.name
-                else:
-                    st.weapon_name = 'Weapon'
-                break
-
-        rule_qr = kwargs['rule']
-        for itr in rule_list:
-            if rule_qr == itr.urlname:
-                rule_re = itr.modelname
-                break
-        
-        platform_qr = kwargs['platform']
-        for itr in platform_list:
-            if platform_qr == itr.urlname:
-                platform_re = itr.modelname
-                break
-        ###
-                
-        # records = quest.records.filter(party__regex=party_re, weapon__name__regex=weapon_re, rules__regex=rule_re, platform__regex=platform_re).order_by('cleartime')
-        user = request.user
-        records = Record.objects.filter(submitter=user).order_by('regist_date')
-        # for issue num update (but maybe don't need)
-        for itr in records:
-            itr.problems = Issue.objects.filter(record=itr, open=True).count()
-
-        self.object_list = records
-        context = self.get_context_data(object_list=self.object_list)
-        return self.render_to_response(context)
-"""
 
 @login_required
 def usersub_list(request):
@@ -435,8 +361,6 @@ def issue_edit(request, quest_id, record_id, accept=None):
             # return redirect('cms:issue_submit', {quest_id=quest_id, record_id=record_id, accept=1} context=context ) 
             return render(request, 'cms/issue_edit.html', {'record': record, 'form': form, 'quest_id': quest_id, 'record_id': record_id, 'accept': 1} )
 
-
-
     else: # GET
         issue.record = record 
         form = IssueForm(instance=issue)
@@ -455,7 +379,7 @@ def about_site(request, nav):
     print(client_addr)
 
     """サイト概要"""
-    return render(request, 'cms/about.html', {'nav_site': 1, 'nav': nav})
+    return render(request, 'cms/about.html', {'nav_site': 1, 'nav': nav,})
 
 def about_rules(request):
     """ルールについてヘルプ画面"""

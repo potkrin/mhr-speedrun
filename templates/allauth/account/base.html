@@ -9,6 +9,40 @@
   </head>
   <body>
     {% block body %}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+      <a class="navbar-brand" href="{% url 'cms:quest_list' %}">MHRise: Speedrun share</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'cms:quest_list' %}">Quest{% if not about %}<span class="sr-only">(current)</span>{% endif %}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'cms:about' nav='rules' %}">Rules</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'cms:about' nav='submit' %}">Submit</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'cms:about' nav='site' %}">About</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'cms:usersub_list' %}">Your Submission</a>
+          </li>
+          <li class="nav-item active">
+          {% if request.user.is_authenticated %}
+            <a class="nav-link" href="/accounts/logout">Logout</a>
+          {% else %}
+            <a class="nav-link" href="/accounts/login">Login</a>
+          {% endif %}
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div class="container">
       {% if messages %}
       <div>

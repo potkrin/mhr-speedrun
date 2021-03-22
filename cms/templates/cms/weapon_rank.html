@@ -9,6 +9,7 @@
 {% block content %}
 
 {% load tpfilters %}
+{% load humanize %}
 
     <h4 class="mt-4 border-bottom">Record List<!--<small class="text-muted ml-3">{{ quest.questname}}</small>--></h4>
 
@@ -80,7 +81,7 @@
           </div>
         </div>
 
-    <a href="{% url 'cms:record_add' quest_id=quest.id %}" class="btn btn-primary btn-sm my-3">Submit</a>
+    <a href="{% url 'cms:record_add' quest_id=quest.id %}" class="btn btn-outline-primary btn-sm my-3">Submit</a>
     <table class="table table-striped table-bordered">
       <thead>
         <tr>
@@ -107,17 +108,61 @@
           <td>{{ record.get_party_display }}</td>
           <td>{{ record.get_rules_display }}</td>
           <td>{{ record.get_platform_display }}</td>
+          <td>{{ record.regist_date|naturaltime }}</td>
           <td>{{ record.problems }}</td>
+
           {% if record.id is not none %}
           <td>
-            <a href="{% url 'cms:record_mod' quest_id=quest.id record_id=record.id %}" class="btn btn-outline-primary btn-sm">修正</a>
-            <button class="btn btn-outline-danger btn-sm del_confirm" data-toggle="modal" data-target="#deleteModal" data-pk="{{ record.id }}" data-url="{% url 'cms:record_del' quest_id=quest.id record_id=record.id %}">削除</button>
+            <a href="{% url 'cms:issue_submit' quest_id=quest.id record_id=record.id %}" class="btn btn-outline-primary btn-sm">issue</a>
           </td>
           {% endif %}
         </tr>
         {% endfor %}
       </tbody>
     </table>
+
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Weapon</th>
+          <th>Time</th>
+          <th>Runner</th>
+          <th>sample</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for summary in summary_list %}
+        <tr>
+          <td>
+          {% with 'cms/weapon_icon/'|add:summary.0.0.weapon.imagepath as image_static %}
+            <img src="{% static image_static %}" height=30 alt={{summary.0.0.get_weapon_display}}>
+          {% endwith %}
+          </td>
+          <td><a href="{{ summary.0.0.link }}" target="_blank" rel="noopener noreferrer" class="text-primary">{{ summary.0.0.cleartime | duration }}</a></td>
+          <td>{{ summary.0.0.runner }}</td>
+          <td></td>
+
+        </tr>
+ 
+        {% comment %}
+        {% with summary.0.record as record %}
+        <tr>
+          <td>
+          {% with 'cms/weapon_icon/'|add:record.weapon.imagepath as image_static %}
+            <img src="{% static image_static %}" height=30 alt={{record.get_weapon_display}}>
+          {% endwith %}
+          </td>
+          <td><a href="{{ record.link }}" target="_blank" rel="noopener noreferrer" class="text-primary">{{ record.cleartime | duration }}</a></td>
+          <td>{{ record.runner }}</td>
+          <td></td>
+
+        </tr>
+        {% endwith %}
+        {% endcomment %}
+        {% endfor %}
+      </tbody>
+    </table>
+
 
     {% if is_paginated %}
     <nav aria-label="Page navigation">

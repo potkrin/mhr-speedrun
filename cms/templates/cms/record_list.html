@@ -91,7 +91,7 @@
           </div>
         </div>
 
-    <a href="{% url 'cms:record_add' quest_id=quest.id %}" class="btn btn-primary btn-sm my-3">Submit</a>
+    <a href="{% url 'cms:record_add' quest_id=quest.id %}" class="btn btn-outline-primary btn-sm my-3">Submit</a>
     <!-- <a href="{% url 'cms:quest_list' %}" class="btn btn-secondary btn-sm">戻る</a> -->
     <table class="table table-striped table-bordered">
       <thead>
@@ -124,8 +124,6 @@
           <td>{{ record.problems }}</td>
           <td>
             <a href="{% url 'cms:issue_submit' quest_id=quest.id record_id=record.id %}" class="btn btn-outline-primary btn-sm">issue</a>
-            <!-- <button class="btn btn-outline-danger btn-sm del_confirm" data-toggle="modal" data-target="#deleteModal" data-pk="{{ record.id }}" data-url="{% url 'cms:record_del' quest_id=quest.id record_id=record.id %}">削除</button>
-            -->
           </td>
         </tr>
         {% endfor %}
