@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',    # ソーシャル連携認証を使っていない場合でも必要
     'allauth.socialaccount.providers.twitter', # twitter でログイン
+    'allauth.socialaccount.providers.google', # google でログイン
 ]
 
 MIDDLEWARE = [
